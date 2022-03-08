@@ -43,6 +43,9 @@ func main() {
 	postR := sm.Methods(http.MethodPost).Subrouter()
 	postR.HandleFunc("/events", eh.Create)
 
+	putR := sm.Methods(http.MethodPut).Subrouter()
+	putR.HandleFunc("/events/{id}/attendees", eh.AddAttendees)
+
 	// CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}))
 

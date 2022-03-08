@@ -13,13 +13,13 @@ type Events struct {
 	eventsDB *data.EventsDB
 }
 
-func NewEvents(edb *data.EventsDB) *Events{
+func NewEvents(edb *data.EventsDB) *Events {
 	return &Events{
 		eventsDB: edb,
 	}
 }
 
-func (e *Events) Create(rw http.ResponseWriter, r *http.Request){
+func (e *Events) Create(rw http.ResponseWriter, r *http.Request) {
 	var event data.Event
 	json.NewDecoder(r.Body).Decode(&event)
 
@@ -30,15 +30,24 @@ func (e *Events) Create(rw http.ResponseWriter, r *http.Request){
 	json.NewEncoder(rw).Encode(result)
 }
 
-func (e *Events) GetEvents(rw http.ResponseWriter, r *http.Request){
+func (e *Events) GetEvents(rw http.ResponseWriter, r *http.Request) {
 	rw.Header().Set("content-type", "application/json")
 	json.NewEncoder(rw).Encode(e.eventsDB.GetEvents())
 }
 
-func (e *Events) GetEventById(rw http.ResponseWriter, r *http.Request){
+func (e *Events) GetEventById(rw http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, _ := primitive.ObjectIDFromHex(params["id"])
 
 	rw.Header().Set("content-type", "application/json")
 	json.NewEncoder(rw).Encode(e.eventsDB.GetEventById(id))
+}
+
+func (e *Events) AddAttendees(rw http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	eventId, _ := primitive.ObjectIDFromHex(params["id"])
+
+	var attendees []data.Attendee
+	json.NewDecoder(r.Body).Decode(&attendees)
+	json.NewEncoder(rw).Encode(e.eventsDB.AddAttendees(eventId, attendees))
 }
