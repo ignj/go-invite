@@ -39,9 +39,12 @@ func main() {
 	getR := sm.Methods(http.MethodGet).Subrouter()
 	getR.HandleFunc("/events", eh.GetEvents)
 	getR.HandleFunc("/events/{id}", eh.GetEventById)
+	getR.HandleFunc("/events/{id}/invitation/{attendeeId}", eh.GetInvitationLink)
 
 	postR := sm.Methods(http.MethodPost).Subrouter()
 	postR.HandleFunc("/events", eh.Create)
+	postR.HandleFunc("/invitation/{hash}/accept", eh.AcceptInvitation)
+	postR.HandleFunc("/invitation/{hash}/decline", eh.DeclineInvitation)
 
 	putR := sm.Methods(http.MethodPut).Subrouter()
 	putR.HandleFunc("/events/{id}/attendees", eh.AddAttendees)

@@ -114,7 +114,7 @@ func (db *EventsDB) GetEventById(id primitive.ObjectID) Event {
 
 func (db *EventsDB) AddAttendees(eventId primitive.ObjectID, attendees []Attendee) *mongo.UpdateResult {
 	event := db.GetEventById(eventId)
-	event.Attendees = append(event.Attendees, InitializeAttendees(attendees)...)
+	event.Attendees = append(event.Attendees, initializeAttendees(attendees)...)
 
 	result, err := db.eventCollection.UpdateByID(ctx, event.ID, bson.M{
 		"$set": event,
@@ -127,7 +127,7 @@ func (db *EventsDB) AddAttendees(eventId primitive.ObjectID, attendees []Attende
 	return result
 }
 
-func InitializeAttendees(attendees []Attendee) []Attendee{
+func initializeAttendees(attendees []Attendee) []Attendee{
 	var result []Attendee
 	for _, element := range attendees{
 		element.AttendStatus = Pending
@@ -135,5 +135,20 @@ func InitializeAttendees(attendees []Attendee) []Attendee{
 		result = append(result,element)
 	}
 	log.Println(result)
+	return result
+}
+
+func (db *EventsDB) UpdateAttendeeStatus(eventId primitive.ObjectID, attendeeId primitive.ObjectID, status ConfirmationStatus) *mongo.UpdateResult{
+	log.Println(eventId, attendeeId, status)
+	filter := bson.D{
+		primitive.E{Key: "_id", Value: eventId},
+		primitive.E{Key: "attendees._id", Value: attendeeId},
+	}
+	update := bson.M{
+		"$set": bson.M{
+			"attendees.$.attendStatus": status,
+		},
+	}
+	result, _ := db.eventCollection.UpdateOne(ctx, filter, update)
 	return result
 }
