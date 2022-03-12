@@ -152,3 +152,16 @@ func (db *EventsDB) UpdateAttendeeStatus(eventId primitive.ObjectID, attendeeId 
 	result, _ := db.eventCollection.UpdateOne(ctx, filter, update)
 	return result
 }
+
+func (db *EventsDB) RemoveAttendee(eventId primitive.ObjectID, attendeeId primitive.ObjectID) *mongo.UpdateResult{
+	filter := bson.D{
+		primitive.E{Key: "_id", Value: eventId},
+	}
+	update := bson.M{
+		"$pull": bson.M{
+			"attendees": bson.D{primitive.E{Key: "_id", Value: attendeeId}},
+		},
+	}
+	result, _ := db.eventCollection.UpdateOne(ctx, filter, update)
+	return result
+}

@@ -95,3 +95,13 @@ func (e *Events) DeclineInvitation(rw http.ResponseWriter, r *http.Request){
 
 	json.NewEncoder(rw).Encode(e.eventsDB.UpdateAttendeeStatus(eventId, attendeeId, data.No))
 }
+
+func (e *Events) RemoveAttendee(rw http.ResponseWriter, r *http.Request){
+	params := mux.Vars(r)
+	eventId, _ := primitive.ObjectIDFromHex(params["id"])
+	attendeeId, _ := primitive.ObjectIDFromHex(params["attendeeId"])
+
+	//todo: if attendee confirmed attendance, return 409 and prevent action
+
+	json.NewEncoder(rw).Encode(e.eventsDB.RemoveAttendee(eventId, attendeeId))
+}

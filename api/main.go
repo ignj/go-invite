@@ -49,6 +49,9 @@ func main() {
 	putR := sm.Methods(http.MethodPut).Subrouter()
 	putR.HandleFunc("/events/{id}/attendees", eh.AddAttendees)
 
+	deleteR := sm.Methods(http.MethodDelete).Subrouter()
+	deleteR.HandleFunc("/events/{id}/attendees/{attendeeId}", eh.RemoveAttendee)
+
 	// CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}))
 
