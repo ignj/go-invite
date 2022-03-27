@@ -4,22 +4,22 @@
   import Loading from "../components/Loading.svelte";
   import type { Celebration } from "../types/Celebration";
   import { celebrations } from "../stores/Store";
+  import { onMount } from "svelte";
 
-  const fetchCelebrations = (async () => {
+  let currentCelebrations;
+
+  onMount(async () => {
     const response = await fetch("http://localhost:8080/events");
-    return (await response.json()) as Promise<Celebration[]>;
-  })();
+    celebrations.set((await response.json()) as Celebration[]);
+  });
 
-  function saveCelebrations(fetchedCelebrations: Celebration[]) {
-    celebrations.set(fetchedCelebrations);
-  }
+  celebrations.subscribe((value) => {
+    currentCelebrations = value;
+  });
 </script>
 
 <section>
-  {#await fetchCelebrations}
-    <Loading />
-  {:then events}
-    {saveCelebrations(events)}
+  {#if currentCelebrations.length > 0}
     <h1>Celebrations</h1>
     <DataTable table$aria-label="Celebration list" style="max-width: 100%;">
       <Head>
@@ -32,7 +32,7 @@
         </Row>
       </Head>
       <Body>
-        {#each events as event}
+        {#each currentCelebrations as event}
           <Row>
             <Cell>{event._id}</Cell>
             <Cell>{event.title}</Cell>
@@ -43,7 +43,7 @@
         {/each}
       </Body>
     </DataTable>
-  {:catch error}
-    <p>Server error while fetching the events</p>
-  {/await}
+  {:else}
+    <Loading />
+  {/if}
 </section>
