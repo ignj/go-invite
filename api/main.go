@@ -40,6 +40,7 @@ func main() {
 	getR.HandleFunc("/events", eh.GetEvents)
 	getR.HandleFunc("/events/{id}", eh.GetEventById)
 	getR.HandleFunc("/events/{id}/invitation/{attendeeId}", eh.GetInvitationLink)
+	getR.HandleFunc("/invitation/{hash}/overview", eh.GetInvitationOverview)
 
 	postR := sm.Methods(http.MethodPost).Subrouter()
 	postR.HandleFunc("/events", eh.Create)

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/ignj/go-invite/data"
@@ -17,6 +18,12 @@ type Events struct {
 
 type Invitation struct {
 	InvitationHash string `json:"invitationHash"`
+}
+
+type EventOverview struct {
+	Date        time.Time          `json:"date,omitempty"`
+	Title       string             `json:"title,omitempty"`
+	Description string             `json:"description,omitempty"`
 }
 
 func NewEvents(edb *data.EventsDB) *Events {
@@ -70,6 +77,23 @@ func (e *Events) GetInvitationLink(rw http.ResponseWriter, r *http.Request){
 	json.NewEncoder(rw).Encode(&Invitation{
 		base64.StdEncoding.EncodeToString([]byte(eventUser)),
 	})
+}
+
+func (e *Events) GetInvitationOverview(rw http.ResponseWriter, r *http.Request){
+	params := mux.Vars(r)
+	hashedInvitation, _ := base64.StdEncoding.DecodeString(params["hash"])
+
+	ids := strings.Split(string(hashedInvitation), "_")
+
+	eventId, _ := primitive.ObjectIDFromHex(ids[0][10:34])
+
+	event := e.eventsDB.GetEventById(eventId)
+
+	json.NewEncoder(rw).Encode(&EventOverview{
+		event.Date,
+		event.Description,
+		event.Title,
+	}) 
 }
 
 func (e *Events) AcceptInvitation(rw http.ResponseWriter, r *http.Request) {
