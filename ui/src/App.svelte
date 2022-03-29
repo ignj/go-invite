@@ -10,7 +10,7 @@
   <Router>
     <Route path="/admin" component={AdminPanel} />
     <Route path="/event/:id" component={CelebrationManagement} />
-    <Route path="/invite/:id" component={Invite} />
+    <Route path="/invite/:hash" component={Invite} />
     <Route path="/*" component={NotFound} />
   </Router>
 </main>

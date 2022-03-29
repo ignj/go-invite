@@ -45,7 +45,9 @@
 
     showTooltip(attendeeId);
 
-    navigator.clipboard.writeText((await response.json()).invitationHash);
+    navigator.clipboard.writeText(
+      `http://localhost:5000/invite/${(await response.json()).invitationHash}`
+    );
   }
 
   function showTooltip(attendeeId: string) {
