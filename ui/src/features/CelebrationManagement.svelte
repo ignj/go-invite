@@ -31,7 +31,7 @@
         return "pending";
       case 1:
         return "confirmed";
-      case 1:
+      case 2:
         return "absent";
       default:
         return "unknown status";
