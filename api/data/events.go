@@ -44,7 +44,7 @@ type EventsDB struct {
 
 func NewEventsDB() *EventsDB {
 	// uri := os.Getenv("MONGODB_URI")
-	uri := "mongodb://admin:admin@localhost:27017/?authSource=admin"
+	uri := "mongodb://admin:admin@db:27017/?authSource=admin"
 
 	if uri == "" {
 		log.Fatal("You must set your 'MONGODB_URI' environmental variable. See\n\t https://docs.mongodb.com/drivers/go/current/usage-examples/#environment-variable")
