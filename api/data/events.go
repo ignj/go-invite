@@ -16,7 +16,7 @@ type Event struct {
 	Date        time.Time          `json:"date,omitempty" bson:"date,omitempty"`
 	Title       string             `json:"title,omitempty" bson:"title,omitempty"`
 	Description string             `json:"description,omitempty" bson:"description,omitempty"`
-	Attendees   []Attendee         `json:"attendees,omitempty" bson:"attendees,omitempty"`
+	Attendees   []Attendee         `json:"attendees" bson:"attendees"`
 }
 
 type Attendee struct {
@@ -73,6 +73,7 @@ func (db *EventsDB) AddEvent(e Event) *mongo.InsertOneResult {
 		Date:        time.Now(),
 		Title:       e.Title,
 		Description: e.Description,
+		Attendees:   []Attendee{},
 	})
 
 	if err != nil {
