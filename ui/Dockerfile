@@ -12,4 +12,5 @@ COPY ./public ./public
 RUN npm run build
 
 FROM nginx:1.19-alpine
+COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/public /usr/share/nginx/html
